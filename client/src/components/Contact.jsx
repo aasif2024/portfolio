@@ -22,9 +22,15 @@ export default function Contact() {
       setForm({ name: "", email: "", message: "" });
     } catch (err) {
       setStatus("error");
-      setErrorMsg(err.message || "Something went wrong. Please email me directly instead.");
+      setErrorMsg(err.message || "Something went wrong sending message to server.");
     }
   }
+
+  const mailtoHref = `mailto:mohammedaasif1786@gmail.com?subject=${encodeURIComponent(
+    `Portfolio Contact from ${form.name || "a visitor"}`
+  )}&body=${encodeURIComponent(
+    `Name: ${form.name}\nEmail: ${form.email}\n\nMessage:\n${form.message}`
+  )}`;
 
   return (
     <footer className="contact" id="contact">
@@ -68,11 +74,26 @@ export default function Contact() {
             onChange={handleChange}
             required
           />
-          <button type="submit" className="btn btn-primary" disabled={status === "sending"}>
-            {status === "sending" ? "Sending…" : "Send message"}
-          </button>
-          {status === "sent" && <p className="form-note form-note-ok">Message received — thanks, I'll reply by email soon.</p>}
-          {status === "error" && <p className="form-note form-note-error">{errorMsg}</p>}
+          <div style={{ display: "flex", gap: "1rem", flexWrap: "wrap", alignItems: "center" }}>
+            <button type="submit" className="btn btn-primary" disabled={status === "sending"}>
+              {status === "sending" ? "Sending…" : "Send message"}
+            </button>
+            {status === "error" && (
+              <a href={mailtoHref} className="btn" style={{ textDecoration: "none", backgroundColor: "#7c3aed", color: "#fff" }}>
+                Send directly via Email ✉️
+              </a>
+            )}
+          </div>
+          {status === "sent" && (
+            <p className="form-note form-note-ok">
+              Message received — thanks! An email notification has been dispatched to mohammedaasif1786@gmail.com.
+            </p>
+          )}
+          {status === "error" && (
+            <p className="form-note form-note-error">
+              {errorMsg} Click the button above to send directly via email client to mohammedaasif1786@gmail.com.
+            </p>
+          )}
         </form>
 
         <div className="sig-note reveal" ref={sigRef}>
